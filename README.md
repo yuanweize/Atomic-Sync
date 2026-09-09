@@ -19,6 +19,13 @@
 
 ---
 
+<div align="center">
+  <img src="docs/assets/dashboard.png" width="850" alt="Atomic Sync Web Control Plane Dashboard">
+  <p><em>Figure 1: Atomic Sync Web Control Plane — auditable directory-unit inventory, transfer status, and policy management</em></p>
+</div>
+
+---
+
 Atomic Sync is a focused control plane for copying or moving mature directory trees from a local or CIFS-mounted source branch to a supported rclone destination. It groups regular files at a fixed directory boundary, waits until the whole unit is stable, pins its destination, and lets rclone perform the data transfer directly. General-purpose `folder` and `depth` policies work for project trees, datasets, exports, build artifacts, and other directory-organized content; `show` and `season` are convenient media-library hierarchy presets.
 
 This solves two problems that a single transfer command cannot:
@@ -137,6 +144,11 @@ docker compose ps atomic-sync
 Open `http://127.0.0.1:8088`, enter the API token, and start with a paused dry-run job. The reference Compose file mounts `/sources/media` read-only; that container path is only an example mount name and does not restrict the engine to media. This safely supports `copy` and dry-run planning for either mode; a real `move` requires an explicit, reviewed source-mount change described in [Operations](docs/OPERATIONS.md).
 
 ### Minimal safe job
+
+<div align="center">
+  <img src="docs/assets/job-configuration.png" width="850" alt="Atomic Sync Job Configuration">
+  <p><em>Figure 2: Declarative transfer job setup — mode selection, directory grouping, stability settle window, and verification policy</em></p>
+</div>
 
 ```json
 {

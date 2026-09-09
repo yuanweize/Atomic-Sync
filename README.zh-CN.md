@@ -13,6 +13,13 @@
 
 ---
 
+<div align="center">
+  <img src="docs/assets/dashboard.png" width="850" alt="Atomic Sync Web 控制台面板">
+  <p><em>图 1: Atomic Sync Web 控制台 — 审计目录单元清单、传输状态、调度历史与策略管理</em></p>
+</div>
+
+---
+
 Atomic Sync 是普通文件目录树的 copy/move 控制面：它把本地或 CIFS 挂载来源中的普通文件按固定目录边界分组，等待整个单元稳定，固定到官方镜像支持的 rclone 目标，再直接交给 rclone 传输。通用的 `folder` 和 `depth` 可用于项目目录、数据集、导出结果、构建产物等分层数据；`show` 和 `season` 是媒体库层级的便捷预设。
 
 它主要解决两个普通传输命令无法独立解决的问题：
@@ -131,6 +138,11 @@ docker compose ps atomic-sync
 打开 `http://127.0.0.1:8088`，输入 Token，先创建暂停的 dry-run 任务。参考 Compose 把 `/sources/media` 挂载为只读；这个容器路径只是示例挂载名，不代表引擎只支持媒体。它可以安全运行 `copy` 和任意模式的 dry-run；真正的 `move` 必须按[运维手册](docs/OPERATIONS.md)显式审核并更改来源挂载权限。
 
 ### 最小安全任务
+
+<div align="center">
+  <img src="docs/assets/job-configuration.png" width="850" alt="Atomic Sync 任务配置面板">
+  <p><em>图 2: 声明式传输任务配置 — 模式选择、目录分组边界、静默稳定时间窗口与校验策略</em></p>
+</div>
 
 ```json
 {

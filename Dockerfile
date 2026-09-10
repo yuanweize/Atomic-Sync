@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 AS build
+FROM --platform=$BUILDPLATFORM golang:1.25.13-alpine AS build
 WORKDIR /src
 ENV GOPROXY=https://proxy.golang.org|direct \
     GOTOOLCHAIN=local
@@ -22,7 +22,7 @@ RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath \
 # Build the current rclone release from source with the two transfer backends
 # and commands Atomic Sync actually uses. Explicit dependency floors retain
 # fixes for CVE-2026-56852 and GHSA-hrxh-6v49-42gf.
-FROM --platform=$BUILDPLATFORM golang:1.25-alpine@sha256:56961d79ea8129efddcc0b8643fd8a5416b4e6228cfd477e3fd61deb2672c587 AS rclone-build
+FROM --platform=$BUILDPLATFORM golang:1.25.13-alpine AS rclone-build
 WORKDIR /src
 ENV GOPROXY=https://proxy.golang.org|direct \
     GOTOOLCHAIN=local
@@ -32,8 +32,9 @@ ARG RCLONE_VERSION=v1.75.0
 COPY build/rclone-main.go.in ./main.go
 RUN go mod init atomic-sync-rclone \
     && go mod edit -require=github.com/rclone/rclone@$RCLONE_VERSION \
+    && go mod edit -require=golang.org/x/crypto@v0.55.0 \
     && go mod edit -require=golang.org/x/text@v0.39.0 \
-    && go mod edit -require=google.golang.org/grpc@v1.82.1
+    && go mod edit -require=google.golang.org/grpc@v1.85.0-dev.0.20260825072537-93e31b48545e
 RUN for attempt in 1 2 3; do \
       CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -mod=mod -trimpath \
         -ldflags="-s -w -X github.com/rclone/rclone/fs.Version=${RCLONE_VERSION#v}" \
@@ -47,6 +48,7 @@ ARG VERSION=dev
 ARG COMMIT=unknown
 ARG BUILD_DATE=unknown
 RUN apk add --no-cache ca-certificates tzdata \
+    && apk upgrade --no-cache \
     && addgroup -S -g 1000 atomic \
     && adduser -S -D -u 1000 -G atomic -h /home/atomic atomic \
     && mkdir -p /data /config/rclone /home/atomic \

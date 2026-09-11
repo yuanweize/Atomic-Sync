@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.25.13-alpine AS build
+FROM --platform=$BUILDPLATFORM golang:1.27.1-alpine AS build
 WORKDIR /src
 ENV GOPROXY=https://proxy.golang.org|direct \
     GOTOOLCHAIN=local
@@ -22,7 +22,7 @@ RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath \
 # Build the current rclone release from source with the two transfer backends
 # and commands Atomic Sync actually uses. Explicit dependency floors retain
 # fixes for CVE-2026-56852 and GHSA-hrxh-6v49-42gf.
-FROM --platform=$BUILDPLATFORM golang:1.25.13-alpine AS rclone-build
+FROM --platform=$BUILDPLATFORM golang:1.27.1-alpine AS rclone-build
 WORKDIR /src
 ENV GOPROXY=https://proxy.golang.org|direct \
     GOTOOLCHAIN=local
